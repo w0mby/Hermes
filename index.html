@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Report Generator</title>
+        <script src="//unpkg.com/alpinejs" defer></script>
+        <script src="app.js"></script>
+        <script src="mock.js"></script>
+        <script src="https://cdn.tailwindcss.com"></script>
+        <link rel="stylesheet" href="app.css">
+    </head>
+    <body class="bg-gray-100">
+        <div id="app" class="relative flex h-screen overflow-hidden" x-data="reportGeneratorApp()" x-init="init()">
+            <!-- Left Elements Panel -->
+            <div class="side-panel bg-white" :class="{ 'hidden': !showElementsPanel }" x-show="showElementsPanel" style="left: 0;">
+                <div class="flex justify-end">
+                    <button @click="showElementsPanel = false" class="text-white bg-red-500 hover:bg-red-700 font-bold py-2 px-4 rounded absolute top-0 right-0 m-2">Close</button>
+                </div>
+                <div class="mt-14">
+                    <template x-for="element in elements" :key="element.ElementID">
+                        <div class="element-item flex justify-center cursor-pointer mt-5" @click="addToReport(element.ElementID)">
+                            <img :src="element.ElementImage" :alt="element.ElementType" :title="element.ElementType"  class="element-preview mx-auto">
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <!-- Retracted Trigger for Left Elements Panel -->
+            <div class="absolute left-0 p-2 bg-blue-100 cursor-pointer" @click="showElementsPanel = true" x-show="!showElementsPanel"></div>
+            <!-- Central Report Panel Area -->
+            <div class="central-container py-4 overflow-auto">
+                <div class="flex justify-center h-full">
+                    <div class="w-full">
+                        <div class="flex justify-between mb-4">
+                            <button @click="fetchReportsForTeam()" class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded">Choose Report</button>
+                            <button @click="fetchTemplates()" class="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded">Choose Template</button>
+                        </div>
+                        <template x-for="(element, index) in reportBlocks" :key="index">
+                            <div class="report-item" 
+                                :class="{ 'selected': element.ElementID === selectedElement?.ElementID}" 
+                                @click="selectElementForEditing(element)" x-html="element.HTMLContent"></div>
+                        </template>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Right Edit Element Panel -->
+            <div class="side-panel bg-white" :class="{ 'hidden': !showEditPanel }"  x-show="showEditPanel" style="right: 0;">
+                <button @click="showEditPanel = false" class="text-white bg-red-500 hover:bg-red-700 font-bold py-2 px-4 rounded absolute top-0 left-0 m-2">Close</button>
+            </div>
+
+            <!-- Retracted Trigger for Right Edit Element Panel -->
+            <div class="absolute right-0 p-2 bg-red-100 cursor-pointer" @click="showEditPanel = true" x-show="!showEditPanel"></div>
+            <!-- Report Selection Modal -->
+            <div x-show.transition.opacity="showReportsModal" class="fixed inset-0 z-10 flex items-center justify-center modal-backdrop" x-cloak>
+                <div class="bg-white p-4 rounded shadow-lg">
+                    <div class="mb-4 font-bold">Select a Report</div>
+                    <ul>
+                        <template x-for="(report, index) in reports" :key="index">
+                            <li class="mb-2 cursor-pointer" @click="selectReport(report)"><span x-text="report.title"></span></li>
+                        </template>
+                    </ul>
+                    <button @click="showReportsModal = false" class="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white rounded">Close</button>
+                    
+                </div>
+            </div>
+            <!-- Template Selection Modal -->
+            <div x-show.transition.opacity="showTemplatesModal" class="fixed inset-0 z-10 flex items-center justify-center modal-backdrop" x-cloak>
+                <div class="bg-white p-4 rounded shadow-lg">
+                    <div class="mb-4 font-bold">Select a Template</div>
+                    <ul>
+                        <template x-for="(template, index) in templates" :key="index">
+                            <li class="mb-2 cursor-pointer" @click="selectTemplate(template)"><span x-text="template.title"></span></li>
+                        </template>
+                    </ul>
+                    <button @click="showTemplatesModal = false" class="px-4 py-2 bg-gray-500 hover:bg-gray-700 text-white rounded">Close</button>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

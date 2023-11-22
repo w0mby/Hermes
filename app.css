@@ -1,0 +1,31 @@
+.side-panel {
+    position: fixed;
+    top: 0;
+    bottom: 0;
+    width: 400px; /* Or 25% as per media query */
+    overflow-y: auto;
+    transition: transform 1s ease-in-out;
+    z-index: 40;
+    border-right: 1px solid #e5e7eb;
+    box-shadow: -2px 0 5px rgba(0, 0, 0, 0.1);
+}
+@media (max-width: 1024px) {
+    .side-panel { width: 25%; }
+}
+.modal-backdrop {
+    background-color: rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(5px);
+}
+.close-button {
+    position: absolute;
+    top: 0;
+    right: 0;
+    margin: 1rem;
+}
+.central-container {
+    width: 100%;
+    max-width: 50%;
+    margin-left: auto;
+    margin-right: auto;
+    background-color: white;
+}
